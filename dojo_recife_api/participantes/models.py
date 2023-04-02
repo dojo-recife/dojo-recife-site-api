@@ -1,6 +1,6 @@
 import uuid
 from django.db import models
-from base.models import BaseModel
+from dojo_recife_api.base.models import BaseModel
 
 
 class Participante(BaseModel):
