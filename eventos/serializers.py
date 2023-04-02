@@ -1,9 +1,9 @@
 from rest_framework import serializers
-from .models import Eventos
-from rest_flex_fields import FlexFieldsModelSerializer
+from .models import Evento
 
 
-class EventosSerializer(FlexFieldsModelSerializer):
+class EventoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Eventos
-        fields = "__all__"
+        model = Evento
+        fields = ("id", "local", "data", "hora", "max_pessoas", "data_hora_limite")
+        read_only_fields = ("id",)

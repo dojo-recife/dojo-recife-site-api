@@ -1,10 +1,9 @@
 from rest_framework import serializers
-from .models import Participantes
-from eventos.serializers import EventosSerializer
+from .models import Participante
 
 
-class ParticipantesSerializer(serializers.ModelSerializer):
+class ParticipanteSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Participantes
-        fields = "__all__"
-        expandable_fields = {"evento": EventosSerializer}
+        model = Participante
+        fields = ("id", "nome", "email", "telefone", "documento", "evento")
+        read_only = ("id",)
