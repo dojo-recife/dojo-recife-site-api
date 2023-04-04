@@ -3,6 +3,7 @@
 import os
 import sys
 
+TIME_ZONE = 'America/Recife'
 
 def main():
     """Run administrative tasks."""
