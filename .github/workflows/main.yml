@@ -5,9 +5,10 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
+  workflow_dispatch:
 
 env:
-  ENVIROMENT: test
+  SECRET_KEY=secret
 
 jobs:
   build:
