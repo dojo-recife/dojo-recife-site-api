@@ -1,9 +1,11 @@
-from rest_framework import viewsets, permissions
+from rest_framework import permissions, viewsets
+from rest_framework.response import Response
+
 from .models import Evento
 from .serializers import EventoSerializer
 
 
 class EventoViewSet(viewsets.ModelViewSet):
-    queryset = Evento.objects.all()
     serializer_class = EventoSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
+    queryset = Evento.objects.all()
