@@ -17,7 +17,7 @@ def create_participante(participante_factory, evento, amount=1):
 
 def test_list_participantes(client, participante_factory, evento):
     create_participante(participante_factory, evento, 2)
-    url = reverse("participante-list")
+    url = reverse("participantes-list")
     response = client.get(url)
     assert response.status_code == HTTPStatus.OK
     assert len(response.json()) == 2
@@ -25,7 +25,7 @@ def test_list_participantes(client, participante_factory, evento):
 
 def test_create_participante(client, evento, participante_payload):
     evento.save()
-    url = reverse("participante-list")
+    url = reverse("participantes-list")
     response = client.post(url, participante_payload)
     assert response.status_code == HTTPStatus.CREATED
 
@@ -36,7 +36,7 @@ def test_create_participante(client, evento, participante_payload):
 def test_create_participante_without_field(field, client, participante_payload, evento):
     evento.save()
     participante_payload.pop(field)
-    url = reverse("participante-list")
+    url = reverse("participantes-list")
     response = client.post(url, participante_payload)
     assert response.status_code == HTTPStatus.BAD_REQUEST
 
@@ -47,7 +47,7 @@ def test_create_participante_without_field(field, client, participante_payload, 
 def test_create_evento_with_field_blank(field, client, participante_payload, evento):
     evento.save()
     participante_payload[field] = ""
-    url = reverse("participante-list")
+    url = reverse("participantes-list")
     response = client.post(url, participante_payload)
     assert response.status_code == HTTPStatus.BAD_REQUEST
 
@@ -55,13 +55,13 @@ def test_create_evento_with_field_blank(field, client, participante_payload, eve
 def test_detail_participante(client, participante, evento):
     evento.save()
     participante.save()
-    url = reverse("participante-detail", kwargs={"pk": participante.id})
+    url = reverse("participantes-detail", kwargs={"pk": participante.id})
     response = client.get(url)
     assert response.status_code == HTTPStatus.OK
 
 
 def test_detail_participante_nonexistent(client):
-    url = reverse("participante-detail", kwargs={"pk": 123})
+    url = reverse("participantes-detail", kwargs={"pk": 123})
     response = client.get(url)
     assert response.status_code == HTTPStatus.NOT_FOUND
 
@@ -69,7 +69,7 @@ def test_detail_participante_nonexistent(client):
 def test_update_participante(client, participante, evento):
     evento.save()
     participante.save()
-    url = reverse("participante-detail", kwargs={"pk": participante.id})
+    url = reverse("participantes-detail", kwargs={"pk": participante.id})
     payload = {
         "nome": "Ana",
         "email": "ana@email.com",
@@ -90,7 +90,7 @@ def test_update_participante(client, participante, evento):
 def test_fail_update_participante(client, participante, evento):
     evento.save()
     participante.save()
-    url = reverse("participante-detail", kwargs={"pk": participante.id})
+    url = reverse("participantes-detail", kwargs={"pk": participante.id})
     payload = {
         "nome": "Teste",
     }
@@ -102,7 +102,7 @@ def test_fail_update_participante(client, participante, evento):
 def test_partial_update_participante(client, participante, evento):
     evento.save()
     participante.save()
-    url = reverse("participante-detail", kwargs={"pk": participante.id})
+    url = reverse("participantes-detail", kwargs={"pk": participante.id})
     payload = {"email": "newemail@email.com"}
     response = client.patch(url, payload, content_type="application/json")
 
