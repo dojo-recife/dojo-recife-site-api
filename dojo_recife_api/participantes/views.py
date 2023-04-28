@@ -6,7 +6,7 @@ from .serializers import ParticipanteSerializer
 
 class ParticipanteViewSet(viewsets.ModelViewSet):
     serializer_class = ParticipanteSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.AllowAny]
 
     def get_queryset(self):
         queryset = Participante.objects.all()

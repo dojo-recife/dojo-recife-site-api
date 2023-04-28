@@ -7,5 +7,5 @@ from .serializers import EventoSerializer
 
 class EventoViewSet(viewsets.ModelViewSet):
     serializer_class = EventoSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
     queryset = Evento.objects.all()
