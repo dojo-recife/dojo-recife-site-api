@@ -1,13 +1,16 @@
+import uuid
 from http import HTTPStatus
 
 import pytest
 from pytest_factoryboy.fixture import register
 from rest_framework.reverse import reverse
 
-from tests.factories.participantes import ParticipanteFactory
+from tests.factories.eventos import EventoFactory
+from tests.factories.participantes import Participante, ParticipanteFactory
 
 pytestmark = pytest.mark.django_db
 
+register(EventoFactory, "another_evento")
 register(ParticipanteFactory, "another_participante")
 
 
@@ -110,3 +113,40 @@ def test_partial_update_participante(client, participante, evento):
 
     assert response.status_code == HTTPStatus.OK
     assert participante.email != response.json()["email"]
+
+
+    #Testar a filtragem por evento utilizando o query parameter na URL.
+def test_list_participantes_by_evento(client, participante_factory, evento):
+    create_participante(participante_factory, evento, 2)
+    evento2 = EventoFactory.create()
+    create_participante(participante_factory, evento2, 1)
+
+    url = reverse("participantes-list")
+    response = client.get(url, {'evento': evento.id})
+    assert response.status_code == HTTPStatus.OK
+    assert len(response.json()) == 2
+
+    response = client.get(url, {'evento': evento2.id})
+    assert response.status_code == HTTPStatus.OK
+    assert len(response.json()) == 1
+    
+
+    #Teste para garantir que a API retorne apenas os participantes do evento solicitado
+def test_detail_participante_by_evento(client, participante_factory, evento):
+    evento.save()
+    create_participante(participante_factory, evento, 2)
+    create_participante(participante_factory, EventoFactory(), 2)
+    participante = Participante.objects.filter(evento=evento).first()
+    url = reverse("participantes-detail", kwargs=
+                  {"pk": participante.id}) + f"?evento={evento.id}"
+    response = client.get(url)
+    assert response.status_code == HTTPStatus.OK
+    assert uuid.UUID(response.json()['evento']) == evento.id
+    
+    
+    #Este teste verifica se a API retorna uma lista vazia se o ID do evento solicitado não existir.
+def test_list_participantes_by_noexistent_evento(client):
+    url = reverse("participantes-list")+f"?evento={uuid.UUID('550e8400-e29b-11d4-a716-446655440000')}"
+    response = client.get(url)
+    assert response.status_code == HTTPStatus.OK
+    assert len(response.json()) == 0
