@@ -110,8 +110,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "America/Recife"
-
 USE_I18N = True
 
 USE_TZ = True
