@@ -1,5 +1,6 @@
 import pytest
 from dojo_recife_api.participantes.serializers import ParticipanteSerializer
+from dojo_recife_api.eventos.models import Evento
 
 pytestmark = pytest.mark.django_db
 
@@ -42,3 +43,33 @@ def test_partial_update_participante_serializer(participante, evento):
 
     assert updated_participante.id == participante.id
     assert updated_participante.nome != old_name
+
+def test_signup_past_limittime(evento):
+    participante_data = {
+        "nome": "Teste Depois Limite",
+        "email": "teste@email.com",
+        "telefone": "81900000000",
+        "documento": "00000000000",
+        "evento": evento.id
+    }
+
+    serializer = ParticipanteSerializer(data=participante_data)
+
+    assert not serializer.is_valid()
+
+
+def test_signup_before_limittime():
+    evento = Evento.objects.create(local="Vasco da Gama", data="2023-12-12", hora="19:00:00", max_pessoas=10, data_hora_limite="2023-12-10 10:00")
+
+    participante_data = {
+        "nome": "Teste Antes Limite",
+        "email": "testando@email.com",
+        "telefone": "81911111111",
+        "documento": "11111111111",
+        "evento": evento.id
+    }
+    
+    serializer = ParticipanteSerializer(data=participante_data)
+
+    assert serializer.is_valid()
+
