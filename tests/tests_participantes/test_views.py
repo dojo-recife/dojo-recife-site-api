@@ -131,7 +131,7 @@ def test_list_participantes_by_evento(client, participante_factory, evento):
     assert len(response.json()) == 1
     
 
-    #Teste para garantir que a API retorne apenas os participantes do evento solicitado
+#Teste para garantir que a API retorne apenas os participantes do evento solicitado
 def test_detail_participante_by_evento(client, participante_factory, evento):
     evento.save()
     create_participante(participante_factory, evento, 2)
@@ -142,11 +142,17 @@ def test_detail_participante_by_evento(client, participante_factory, evento):
     response = client.get(url)
     assert response.status_code == HTTPStatus.OK
     assert uuid.UUID(response.json()['evento']) == evento.id
-    
-    
+
+
     #Este teste verifica se a API retorna uma lista vazia se o ID do evento solicitado não existir.
 def test_list_participantes_by_noexistent_evento(client):
     url = reverse("participantes-list")+f"?evento={uuid.UUID('550e8400-e29b-11d4-a716-446655440000')}"
     response = client.get(url)
     assert response.status_code == HTTPStatus.OK
     assert len(response.json()) == 0
+
+#teste para verificar se a API retorna um 404 se o ID do evento solicitado estiver invalido
+def test_get_queryset_status_code_with_invalid_event(client):
+    evento = 'Evento Inexistente'
+    response = client.get('/participantes/?evento=' + evento)
+    assert response.status_code == HTTPStatus.NOT_FOUND
